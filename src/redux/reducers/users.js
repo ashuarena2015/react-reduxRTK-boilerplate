@@ -1,53 +1,33 @@
-// import axiosInstance from '../axios';
-// import { globalSnackbarMessage } from './global';
-import { createAction } from "@reduxjs/toolkit";
-
-// Actions types
-const fetchUsers = createAction('FETCH_USERS');
+import axiosInstance from '../axios';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 // Initial state
 const initialState = {
     users: []
 };
 
-// Actions
-export const fetchUsersApi = () => async (dispatch) => {
-    
-    // try {
-    //     const res = await axiosInstance.get('/users');
-    //     console.log({res});
-    //     dispatch({
-    //         type: FETCH_USERS,
-    //         payload: {
-    //             users: res?.data
-    //         }
-    //     });
-    //     dispatch(globalSnackbarMessage({
-    //         message: 'Successfully fetched the users data', 
-    //         msgType: 'success'
-    //     }));
-    // } catch (e) {
-    //     console.log('error users');
-    //     dispatch(globalSnackbarMessage({
-    //         message: 'Something went wrong', 
-    //         msgType: 'error'
-    //     }));
-    //     // throw new Error(e);
-    // }
-};
+export const fetchUsers = createAsyncThunk('GET_USERS', async (_, thunkAPI) => {
+    try {
+        const response = await axiosInstance.get('/users');
+        thunkAPI.dispatch(getUsers({
+            users: response?.data
+        }));
+    } catch (e) {
+        console.log(e)
+    }
+})
 
 // Reducer
 
-const usersReducer = (state = initialState, action) => {
-    switch (action.type) {
-        case fetchUsers.type:
-            return {
-                ...state,
-                users: action.payload.users
-            }
-        default:
-            return state;
+const usersReducer = createSlice({
+    name: 'users',
+    initialState,
+    reducers: {
+        getUsers: (state, action) => {
+            console.log('users', ...action.payload.users)
+            state.users =  action.payload.users
+        }
     }
-}
-
-export default usersReducer;
+})
+export const { getUsers } = usersReducer.actions;
+export default usersReducer.reducer;
