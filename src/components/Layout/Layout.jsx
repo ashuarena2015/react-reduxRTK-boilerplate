@@ -1,20 +1,12 @@
 import React from 'react';
-import { Outlet, Link } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import Navigation from './Navigation';
 
 const Layout = () => {
 
     return (
         <>
-        <nav>
-            <ul>
-            <li>
-                <Link to="/">Todo</Link>
-            </li>
-            <li>
-                <Link to="/users">Users</Link>
-            </li>
-            </ul>
-        </nav>
+        <Navigation />
         <Outlet />
         </>
     )
